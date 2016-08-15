@@ -42,7 +42,7 @@ public class WdRpcService {
 		httpRequest.setData(jsonData);
 		httpRequest.setSign(sign);
 		httpRequest.setTimestamp("");
-		AresHttpClient.sendHttpPost("url", httpRequest);
+		AresHttpClient.sendHttpPost(asbConfig.getUrl(), httpRequest);
 	}
 	
 	

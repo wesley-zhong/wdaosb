@@ -10,4 +10,5 @@ public class AsbConfig {
 	private String appKey;
 	private String appSecret;
 	private String apptoken;
+	private String url;
 }

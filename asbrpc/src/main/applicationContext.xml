@@ -27,6 +27,7 @@
 			<property name="appKey"    value="${asb.appkey}"/>
 			<property name="appSecret" value="${asb.appSecret}"/>
 			<property name="apptoken"  value="${asb.apptoken}"/>
+			<property name="url"  value="${asb.url}"/>			
 		</bean>
 
 	</beans>
