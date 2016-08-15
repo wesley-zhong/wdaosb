@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wd.erp.asbrpc.bean.AosbRequest;
+import com.wd.erp.asbrpc.bean.AosbResponse;
 import com.wd.erp.asbrpc.bean.WdRpcData;
 import com.wd.erp.asbrpc.config.AsbConfig;
 import com.wd.erp.asbrpc.utils.AresHttpClient;
@@ -39,12 +40,21 @@ public class WdRpcService {
 		AosbRequest  httpRequest = new AosbRequest();
 		httpRequest.setAppkey(asbConfig.getAppKey());
 		httpRequest.setApptoken(asbConfig.getApptoken());
-		httpRequest.setClient_customerid("aa");
+		httpRequest.setClient_customerid(asbConfig.getClientCustomerId());
 		httpRequest.setData(jsonData);
 		httpRequest.setSign(sign);
-		httpRequest.setTimestamp(TimeUtil.getNowDate());
-		httpRequest.setMethod("method");
-		AresHttpClient.sendHttpPost(asbConfig.getUrl(), httpRequest);
+		String nowDate = TimeUtil.getNowDate();
+		httpRequest.setTimestamp(nowDate);
+		System.out.println("now time = " + nowDate);
+		httpRequest.setMethod("putSOData");
+		httpRequest.setClient_db("FLUXWMS");
+		httpRequest.setFormat("JSON");
+		httpRequest.setMessageid("SO");
+		String result = AresHttpClient.sendHttpPost(asbConfig.getUrl(), httpRequest);
+		if(result != null){
+			AosbResponse reponse = objectMapper.readValue(result.getBytes(), AosbResponse.class);
+			onResponse(reponse);
+		}
 	}
 	
 	
@@ -68,13 +78,10 @@ public class WdRpcService {
 		  return wdData;
 	}
 	
-
 	
-	
-	private int sendAsbRpc(WdRpcData  wdRpcData) throws JsonProcessingException{
-		//String sendData = objectMapper.writeValueAsString(wdRpcData);
-		return 0;
-			
+	private void onResponse(AosbResponse response){
+		System.out.println("response = " + response.getResult().getReturnCode() +" dec = "+ response.getResult().getReturnDesc());
+		// do some thing when finish http request 
 	}
 	
 	public void print(){

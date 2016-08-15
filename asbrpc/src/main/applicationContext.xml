@@ -28,6 +28,7 @@
 		<property name="appSecret" value="${asb.appSecret}" />
 		<property name="apptoken" value="${asb.apptoken}" />
 		<property name="url" value="${asb.url}" />
+		<property name="clientCustomerId" value="${asb.client_customerid}"></property>
 	</bean>
 
 </beans>

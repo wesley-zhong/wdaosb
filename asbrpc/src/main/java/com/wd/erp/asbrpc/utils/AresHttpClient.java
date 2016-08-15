@@ -24,7 +24,7 @@ import com.wd.erp.asbrpc.bean.AosbRequest;
 public class AresHttpClient {
 
 	
-	public static void sendHttpPost(String url, AosbRequest request) {
+	public static String  sendHttpPost(String url, AosbRequest request) {
 		HttpClientBuilder httpClientBuilder = HttpClientBuilder.create(); 
 	    //HttpClient  
         CloseableHttpClient closeableHttpClient = httpClientBuilder.build(); 
@@ -33,7 +33,6 @@ public class AresHttpClient {
         try{
         	UrlEncodedFormEntity formEntity  = createFormParamsFromObj(request);
         	httpPost.setEntity(formEntity);
-        	//System.out.println("================  body = " + httpPost.get)
             CloseableHttpResponse response =  closeableHttpClient.execute(httpPost);
             HttpEntity entity = response.getEntity();  
             if (entity != null) {  
@@ -41,10 +40,12 @@ public class AresHttpClient {
                 System.out.println("Response content: " + EntityUtils.toString(entity, "UTF-8"));  
                 System.out.println("--------------------------------------");  
             }
+            return EntityUtils.toString(entity, "UTF-8");
         	
         }catch(Exception e){
         	e.printStackTrace();
         }
+        return null;
 	}
 	
 	public static UrlEncodedFormEntity  createFormParamsFromObj(AosbRequest request) throws IllegalArgumentException, IllegalAccessException, UnsupportedEncodingException{
