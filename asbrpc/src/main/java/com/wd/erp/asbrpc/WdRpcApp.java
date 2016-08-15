@@ -1,19 +1,24 @@
 package com.wd.erp.asbrpc;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
+
 import org.apache.xbean.spring.context.FileSystemXmlApplicationContext;
 import org.springframework.context.ApplicationContext;
 
+import com.wd.erp.asbrpc.service.WdRpcService;
+
 /**
- * Hello world!
+ *  wd rpc main app
  *
  */
 public class WdRpcApp 
 {
-    public static void main( String[] args )
+
+    private static ApplicationContext ac;
+
+	public static void main( String[] args ) throws Exception
     {
-    	ApplicationContext ac = new FileSystemXmlApplicationContext("src/main/sqlserver-dal-context.xml");
-    	DataSource dataSource = (DataSource)ac.getBean("dataSource");
-        System.out.println( "Hello World! " + dataSource.getName() );
+    	ac = new FileSystemXmlApplicationContext(new String[]{"src/main/applicationContext.xml","src/main/sqlserver-dal-context.xml"});
+    	WdRpcService wdRpcService = (WdRpcService)ac.getBean(WdRpcService.class);
+    	wdRpcService.sendRpcData();
     }
 }
