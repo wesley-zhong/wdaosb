@@ -12,22 +12,22 @@
 
 	<context:component-scan base-package="com.wd.erp.asbrpc.service" />
 
-	
-		<bean
-			class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
-			<property name="locations">
-				<list>
-					<value>classpath:game-default.properties</value>
-				</list>
-			</property>
-			<property name="ignoreResourceNotFound" value="true" />
-			<property name="ignoreUnresolvablePlaceholders" value="true" />
-		</bean>
-	  <bean class="com.wd.erp.asbrpc.config.AsbConfig">
-			<property name="appKey"    value="${asb.appkey}"/>
-			<property name="appSecret" value="${asb.appSecret}"/>
-			<property name="apptoken"  value="${asb.apptoken}"/>
-			<property name="url"  value="${asb.url}"/>			
-		</bean>
 
-	</beans>
+	<bean
+		class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:game-default.properties</value>
+			</list>
+		</property>
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+	</bean>
+	<bean class="com.wd.erp.asbrpc.config.AsbConfig">
+		<property name="appKey" value="${asb.appkey}" />
+		<property name="appSecret" value="${asb.appSecret}" />
+		<property name="apptoken" value="${asb.apptoken}" />
+		<property name="url" value="${asb.url}" />
+	</bean>
+
+</beans>
