@@ -15,6 +15,7 @@ import com.wd.erp.asbrpc.bean.WdRpcData;
 import com.wd.erp.asbrpc.config.AsbConfig;
 import com.wd.erp.asbrpc.utils.AresHttpClient;
 import com.wd.erp.asbrpc.utils.AsbEncode;
+import com.wd.erp.asbrpc.utils.TimeUtil;
 
 @Component
 public class WdRpcService {
@@ -41,7 +42,8 @@ public class WdRpcService {
 		httpRequest.setClient_customerid("aa");
 		httpRequest.setData(jsonData);
 		httpRequest.setSign(sign);
-		httpRequest.setTimestamp("");
+		httpRequest.setTimestamp(TimeUtil.getNowDate());
+		httpRequest.setMethod("method");
 		AresHttpClient.sendHttpPost(asbConfig.getUrl(), httpRequest);
 	}
 	
@@ -49,20 +51,20 @@ public class WdRpcService {
 	//get all the data from table to send	
 	private WdRpcData getErpData(String sql){
 		WdRpcData wdData = new WdRpcData();
-		try{
-			PreparedStatement pstmt = dataSource.getConnection().prepareStatement(sql);
-			ResultSet rs = pstmt.executeQuery();
-			int rol = rs.getMetaData().getColumnCount();
-			while(rs.next()){
-				 wdData.setSomeFiled(rs.getString("someFiled"));
-				 /*
-				  * to do set all the file of  wdData
-				  */			
-			}	
-		}catch (Exception e) {
-			e.printStackTrace();
-			// TODO: handle exception
-		} 
+//		try{
+//			PreparedStatement pstmt = dataSource.getConnection().prepareStatement(sql);
+//			ResultSet rs = pstmt.executeQuery();
+//			int rol = rs.getMetaData().getColumnCount();
+//			while(rs.next()){
+//				 wdData.setSomeFiled(rs.getString("someFiled"));
+//				 /*
+//				  * to do set all the file of  wdData
+//				  */			
+//			}	
+//		}catch (Exception e) {
+//			e.printStackTrace();
+//			// TODO: handle exception
+//		} 
 		  return wdData;
 	}
 	
