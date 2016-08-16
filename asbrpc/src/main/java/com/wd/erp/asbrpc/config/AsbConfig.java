@@ -11,4 +11,5 @@ public class AsbConfig {
 	private String appSecret;
 	private String apptoken;
 	private String url;
+	private String clientCustomerId;
 }
