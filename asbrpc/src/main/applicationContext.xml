@@ -24,11 +24,11 @@
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 	</bean>
 	<bean class="com.wd.erp.asbrpc.config.AsbConfig">
-		<property name="appKey" value="${asb.appkey}" />
+		<property name="appKey"    value="${asb.appkey}" />
 		<property name="appSecret" value="${asb.appSecret}" />
-		<property name="apptoken" value="${asb.apptoken}" />
-		<property name="url" value="${asb.url}" />
-		<property name="clientCustomerId" value="${asb.client_customerid}"></property>
+		<property name="apptoken"  value="${asb.apptoken}" />
+		<property name="url"       value="${asb.url}" />
+		<property name="clientCustomerId" value="${asb.client_customerid}"/>
 	</bean>
 
 </beans>
