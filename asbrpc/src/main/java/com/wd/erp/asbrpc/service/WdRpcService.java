@@ -39,9 +39,11 @@ public class WdRpcService {
 		AosbRequest  httpRequest = new AosbRequest();
 		httpRequest.setAppkey(asbConfig.getAppKey());
 		httpRequest.setApptoken(asbConfig.getApptoken());
-		httpRequest.setClient_customerid("aa");
+		httpRequest.setClient_customerid("FLUXWMS");
 		httpRequest.setData(jsonData);
 		httpRequest.setSign(sign);
+		httpRequest.setClient_db("FLUXWMS");
+		httpRequest.setMessageid("SO");
 		httpRequest.setTimestamp(TimeUtil.getNowDate());
 		httpRequest.setMethod("method");
 		AresHttpClient.sendHttpPost(asbConfig.getUrl(), httpRequest);
