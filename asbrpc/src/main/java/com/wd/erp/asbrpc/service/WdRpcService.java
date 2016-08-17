@@ -22,6 +22,7 @@ import com.wd.erp.asbrpc.config.AsbConfig;
 import com.wd.erp.asbrpc.utils.AresHttpClient;
 import com.wd.erp.asbrpc.utils.AsbEncode;
 import com.wd.erp.asbrpc.utils.CapitalizedPropertyNamingStrategy;
+import com.wd.erp.asbrpc.utils.DBUtils;
 import com.wd.erp.asbrpc.utils.TimeUtil;
 
 @Component
@@ -100,9 +101,9 @@ public class WdRpcService {
 			ResultSet rs = pstmt.executeQuery();
 			int rol = rs.getMetaData().getColumnCount();
 			while (rs.next()) {
-				Header header = new Header();
+				Header header = DBUtils.parseObj(rs, Header.class);
 				List<DetailsItem> detailItemList = new ArrayList<DetailsItem>();
-				header.setOrderNo(rs.getString("OrderNo"));
+				//header.setOrderNo(rs.getString("OrderNo"));
 				/*
 				 * to do set all the file of wdData
 				 */
