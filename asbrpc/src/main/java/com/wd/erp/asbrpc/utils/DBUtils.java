@@ -18,7 +18,7 @@ public class DBUtils {
 			try{
 			 fieldValue = rs.getString(field.getName());
 			}catch(SQLException e){
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 			if(fieldValue == null) 
 				continue;

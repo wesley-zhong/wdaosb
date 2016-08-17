@@ -1,6 +1,5 @@
 package com.wd.erp.asbrpc.utils;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -8,26 +7,34 @@ import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wd.erp.asbrpc.bean.AosbRequest;
 
 public class AresHttpClient {
 
 	
-	public static String  sendHttpPost(String url, AosbRequest request) {
-		HttpClientBuilder httpClientBuilder = HttpClientBuilder.create(); 
+	public static String  sendHttpPost(String url, AosbRequest request) throws UnsupportedEncodingException {
+		
+		RequestConfig defaultRequestConfig = RequestConfig.custom()
+			    .setSocketTimeout(30000)
+			    .setConnectTimeout(30000)
+			    .setConnectionRequestTimeout(30000)
+			    .setStaleConnectionCheckEnabled(true)
+			    .build();
+		
+		HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().setDefaultRequestConfig(defaultRequestConfig); 
 	    //HttpClient  
         CloseableHttpClient closeableHttpClient = httpClientBuilder.build(); 
+       // String urlencode = AsbEncode.urlEncode(url);
+       // System.out.println("url =  " + urlencode);
         HttpPost httpPost = new HttpPost(url); 
         httpPost.setHeader("Content-Type", "application/json");
         try{

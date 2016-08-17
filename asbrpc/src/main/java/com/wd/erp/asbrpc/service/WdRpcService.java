@@ -39,15 +39,13 @@ public class WdRpcService {
 	
 	public void  sendRpcData() throws Exception{
 		objectMapper.setPropertyNamingStrategy(new CapitalizedPropertyNamingStrategy());
-		String sql = "select top 2 * from SEOutStock_TranRecordView";
+		String sql = "select top 6 * from SEOutStock_TranRecordView";
 		AsbRequestData rpcData = this.getAsbData(sql);
-		String jsonData = objectMapper.writeValueAsString(rpcData);
-		
-
-		
+		String jsonData = objectMapper.writeValueAsString(rpcData);		
 		System.out.println("data = " + jsonData );
+		
 		String changeData = asbConfig.getAppSecret() + jsonData + asbConfig.getAppSecret();
-		String md5Data = AsbEncode.md5(changeData);
+		String md5Data    = AsbEncode.md5(changeData);
 		String base64Data = AsbEncode.base64(md5Data);
 		String sign =   AsbEncode.urlEncode(base64Data);
 		AosbRequest  httpRequest = new AosbRequest();
@@ -68,27 +66,6 @@ public class WdRpcService {
 		}
 	}
 	
-	
-	//get all the data from table to send	
-	private WdRpcData getErpData(String sql){
-		WdRpcData wdData = new WdRpcData();
-//		try{
-//			PreparedStatement pstmt = dataSource.getConnection().prepareStatement(sql);
-//			ResultSet rs = pstmt.executeQuery();
-//			int rol = rs.getMetaData().getColumnCount();
-//			while(rs.next()){
-//				 wdData.setSomeFiled(rs.getString("someFiled"));
-//				 /*
-//				  * to do set all the file of  wdData
-//				  */			
-//			}	
-//		}catch (Exception e) {
-//			e.printStackTrace();
-//			// TODO: handle exception
-//		} 
-		  return wdData;
-	}
-	
 	private AsbRequestData getAsbData(String sql) {
 		AsbRequestData requestData = new AsbRequestData();
 		AsbXmlData asbXmlData = new AsbXmlData();
@@ -99,15 +76,10 @@ public class WdRpcService {
 		try {
 			PreparedStatement pstmt = dataSource.getConnection().prepareStatement(sql);
 			ResultSet rs = pstmt.executeQuery();
-			int rol = rs.getMetaData().getColumnCount();
 			while (rs.next()) {
 				Header header = DBUtils.parseObj(rs, Header.class);
-				List<DetailsItem> detailItemList = new ArrayList<DetailsItem>();
-				//header.setOrderNo(rs.getString("OrderNo"));
-				/*
-				 * to do set all the file of wdData
-				 */
-				
+				String fInterID = rs.getString("FInterID");
+				List<DetailsItem> detailItemList  = getDetailbyOrder(fInterID);
 				header.setDetailsItem(detailItemList);
 				headList.add(header);
 			}
@@ -117,6 +89,24 @@ public class WdRpcService {
 		}
 		
 		return requestData;
+	}
+	
+	private List<DetailsItem> getDetailbyOrder(String fInterID) {
+		List<DetailsItem> ditailsItemList = new ArrayList<DetailsItem>();
+		String sql = "select * from SEOutStock_TranRecordEntryView where FInterID = '" + fInterID + "'";
+		try {
+			PreparedStatement pstmt = dataSource.getConnection()
+					.prepareStatement(sql);
+			ResultSet rs = pstmt.executeQuery();
+	
+			while (rs.next()) {
+				DetailsItem detailsItem = DBUtils.parseObj(rs, DetailsItem.class);
+				ditailsItemList.add(detailsItem);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ditailsItemList;
 	}
 	
 	
