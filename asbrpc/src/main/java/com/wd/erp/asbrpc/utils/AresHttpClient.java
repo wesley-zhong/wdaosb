@@ -25,16 +25,13 @@ public class AresHttpClient {
 		
 		RequestConfig defaultRequestConfig = RequestConfig.custom()
 			    .setSocketTimeout(30000)
-			    .setConnectTimeout(30000)
+			    .setConnectTimeout(20000)
 			    .setConnectionRequestTimeout(30000)
 			    .setStaleConnectionCheckEnabled(true)
 			    .build();
 		
 		HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().setDefaultRequestConfig(defaultRequestConfig); 
-	    //HttpClient  
         CloseableHttpClient closeableHttpClient = httpClientBuilder.build(); 
-       // String urlencode = AsbEncode.urlEncode(url);
-       // System.out.println("url =  " + urlencode);
         HttpPost httpPost = new HttpPost(url); 
         httpPost.setHeader("Content-Type", "application/json");
         try{
