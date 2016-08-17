@@ -6,7 +6,6 @@ import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.microsoft.sqlserver.jdbc.SQLServerException;
 
 public class DBUtils {
 	public static <T> T parseObj (ResultSet rs, Class<T> objClass) throws InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException{
@@ -18,8 +17,6 @@ public class DBUtils {
 			String fieldValue = null;
 			try{
 			 fieldValue = rs.getString(field.getName());
-			}catch(SQLServerException e){
-				e.printStackTrace();
 			}catch(SQLException e){
 				e.printStackTrace();
 			}
