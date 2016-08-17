@@ -1,5 +1,7 @@
 package com.wd.erp.asbrpc.bean;
 
+import java.util.List;
+
 import lombok.Data;
 
 @Data
@@ -69,4 +71,5 @@ public class Header {
 	private String WarehouseID;
 
 	private String FollowUp;
+	private List<DetailsItem> detailsItem;
 }
