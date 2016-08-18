@@ -46,6 +46,7 @@ public class WdRpcService {
 		
 		String changeData = asbConfig.getAppSecret() + jsonData + asbConfig.getAppSecret();
 		String md5Data    = AsbEncode.md5(changeData);
+		System.out.println("md5 = "+ md5Data);
 		String base64Data = AsbEncode.base64(md5Data);
 		String sign =   AsbEncode.urlEncode(base64Data);
 		AosbRequest  httpRequest = new AosbRequest();
