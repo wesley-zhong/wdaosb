@@ -40,12 +40,9 @@ public class AresHttpClient {
             CloseableHttpResponse response =  closeableHttpClient.execute(httpPost);
             HttpEntity entity = response.getEntity();  
             if (entity != null) {  
-                System.out.println("--------------------------------------");  
-                System.out.println("Response content: " + EntityUtils.toString(entity, "UTF-8"));  
-                System.out.println("--------------------------------------");  
-            }
-            return EntityUtils.toString(entity, "UTF-8");
-        	
+                String responseContent = EntityUtils.toString(entity, "UTF-8"); 
+                return AsbEncode.urlDecode(responseContent);
+            }    	
         }catch(Exception e){
         	e.printStackTrace();
         }

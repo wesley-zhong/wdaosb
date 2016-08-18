@@ -1,0 +1,25 @@
+2016-08-18 11:30:10,599 [main] INFO  o.a.x.s.c.FileSystemXmlApplicationContext - Refreshing org.apache.xbean.spring.context.FileSystemXmlApplicationContext@5025a98f: startup date [Thu Aug 18 11:30:10 CST 2016]; root of context hierarchy
+2016-08-18 11:30:10,635 [main] INFO  o.a.x.s.c.v.XBeanXmlBeanDefinitionReader - Loading XML bean definitions from URL [file:/D:/wd/wdaosb/asbrpc/target/classes/applicationContext.xml]
+2016-08-18 11:30:10,759 [main] INFO  o.a.x.s.c.v.XBeanXmlBeanDefinitionReader - Loading XML bean definitions from URL [file:/D:/wd/wdaosb/asbrpc/target/classes/sqlserver-dal-context.xml]
+2016-08-18 11:30:10,894 [main] INFO  o.s.c.s.PropertySourcesPlaceholderConfigurer - Loading properties file from class path resource [aosibo.properties]
+2016-08-18 11:30:10,899 [main] INFO  o.s.b.f.a.AutowiredAnnotationBeanPostProcessor - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2016-08-18 11:32:18,648 [main] INFO  o.a.x.s.c.FileSystemXmlApplicationContext - Refreshing org.apache.xbean.spring.context.FileSystemXmlApplicationContext@5025a98f: startup date [Thu Aug 18 11:32:18 CST 2016]; root of context hierarchy
+2016-08-18 11:32:18,678 [main] INFO  o.a.x.s.c.v.XBeanXmlBeanDefinitionReader - Loading XML bean definitions from URL [file:/D:/wd/wdaosb/asbrpc/target/classes/applicationContext.xml]
+2016-08-18 11:32:18,831 [main] INFO  o.a.x.s.c.v.XBeanXmlBeanDefinitionReader - Loading XML bean definitions from URL [file:/D:/wd/wdaosb/asbrpc/target/classes/sqlserver-dal-context.xml]
+2016-08-18 11:32:18,947 [main] INFO  o.s.c.s.PropertySourcesPlaceholderConfigurer - Loading properties file from class path resource [aosibo.properties]
+2016-08-18 11:32:18,953 [main] INFO  o.s.b.f.a.AutowiredAnnotationBeanPostProcessor - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2016-08-18 11:35:09,390 [main] INFO  o.a.x.s.c.FileSystemXmlApplicationContext - Refreshing org.apache.xbean.spring.context.FileSystemXmlApplicationContext@5025a98f: startup date [Thu Aug 18 11:35:09 CST 2016]; root of context hierarchy
+2016-08-18 11:35:09,423 [main] INFO  o.a.x.s.c.v.XBeanXmlBeanDefinitionReader - Loading XML bean definitions from URL [file:/D:/wd/wdaosb/asbrpc/target/classes/applicationContext.xml]
+2016-08-18 11:35:09,557 [main] INFO  o.a.x.s.c.v.XBeanXmlBeanDefinitionReader - Loading XML bean definitions from URL [file:/D:/wd/wdaosb/asbrpc/target/classes/sqlserver-dal-context.xml]
+2016-08-18 11:35:09,678 [main] INFO  o.s.c.s.PropertySourcesPlaceholderConfigurer - Loading properties file from class path resource [aosibo.properties]
+2016-08-18 11:35:09,683 [main] INFO  o.s.b.f.a.AutowiredAnnotationBeanPostProcessor - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2016-08-18 11:35:49,782 [main] INFO  o.a.x.s.c.FileSystemXmlApplicationContext - Refreshing org.apache.xbean.spring.context.FileSystemXmlApplicationContext@58ea606c: startup date [Thu Aug 18 11:35:49 CST 2016]; root of context hierarchy
+2016-08-18 11:35:49,822 [main] INFO  o.a.x.s.c.v.XBeanXmlBeanDefinitionReader - Loading XML bean definitions from URL [file:/D:/wd/wdaosb/asbrpc/target/classes/applicationContext.xml]
+2016-08-18 11:35:49,977 [main] INFO  o.a.x.s.c.v.XBeanXmlBeanDefinitionReader - Loading XML bean definitions from URL [file:/D:/wd/wdaosb/asbrpc/target/classes/sqlserver-dal-context.xml]
+2016-08-18 11:35:50,116 [main] INFO  o.s.c.s.PropertySourcesPlaceholderConfigurer - Loading properties file from class path resource [aosibo.properties]
+2016-08-18 11:35:50,123 [main] INFO  o.s.b.f.a.AutowiredAnnotationBeanPostProcessor - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2016-08-18 11:39:37,977 [main] INFO  o.a.x.s.c.FileSystemXmlApplicationContext - Refreshing org.apache.xbean.spring.context.FileSystemXmlApplicationContext@5025a98f: startup date [Thu Aug 18 11:39:37 CST 2016]; root of context hierarchy
+2016-08-18 11:39:38,012 [main] INFO  o.a.x.s.c.v.XBeanXmlBeanDefinitionReader - Loading XML bean definitions from URL [file:/D:/wd/wdaosb/asbrpc/target/classes/applicationContext.xml]
+2016-08-18 11:39:38,141 [main] INFO  o.a.x.s.c.v.XBeanXmlBeanDefinitionReader - Loading XML bean definitions from URL [file:/D:/wd/wdaosb/asbrpc/target/classes/sqlserver-dal-context.xml]
+2016-08-18 11:39:38,249 [main] INFO  o.s.c.s.PropertySourcesPlaceholderConfigurer - Loading properties file from class path resource [aosibo.properties]
+2016-08-18 11:39:38,255 [main] INFO  o.s.b.f.a.AutowiredAnnotationBeanPostProcessor - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring

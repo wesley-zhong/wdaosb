@@ -1,6 +1,7 @@
 package com.wd.erp.asbrpc.utils;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.util.Base64;
@@ -24,6 +25,10 @@ public class AsbEncode {
 	
 	public static String urlEncode(String msg) throws UnsupportedEncodingException{
 		return  URLEncoder.encode(msg, "utf-8");
+	}
+	
+	public static String urlDecode(String msg) throws UnsupportedEncodingException{
+		return URLDecoder.decode(msg, "utf-8");
 	}
 
 }

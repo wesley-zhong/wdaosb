@@ -15,7 +15,7 @@ public class WdRpcApp
     private static ApplicationContext ac;
 	public static void main( String[] args ) throws Exception
     {	
-    	ac = new FileSystemXmlApplicationContext(new String[]{"src/main/applicationContext.xml","src/main/sqlserver-dal-context.xml"});
+    	ac = new FileSystemXmlApplicationContext(new String[]{"classpath*:applicationContext.xml","classpath*:sqlserver-dal-context.xml"});
     	WdRpcService wdRpcService = (WdRpcService)ac.getBean(WdRpcService.class);
     	wdRpcService.sendRpcData();
     }

@@ -61,6 +61,7 @@ public class WdRpcService {
 		httpRequest.setMessageid("SO");
 		String result = AresHttpClient.sendHttpPost(asbConfig.getUrl(), httpRequest);
 		if(result != null){
+			System.out.println(" response =  " + result);
 			AosbResponse reponse = objectMapper.readValue(result.getBytes(), AosbResponse.class);
 			onResponse(reponse);
 		}
