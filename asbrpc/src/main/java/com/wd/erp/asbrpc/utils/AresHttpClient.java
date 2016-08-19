@@ -21,7 +21,7 @@ import com.wd.erp.asbrpc.bean.AosbRequest;
 public class AresHttpClient {
 
 	
-	public static String  sendHttpPost(String url, AosbRequest request) throws UnsupportedEncodingException {
+	public static String  sendHttpPost(String url, AosbRequest request) {
 		
 		RequestConfig defaultRequestConfig = RequestConfig.custom()
 			    .setSocketTimeout(30000)

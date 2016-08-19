@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wd.erp.asbrpc.bean.AosbRequest;
 import com.wd.erp.asbrpc.bean.AosbResponse;
@@ -64,7 +65,41 @@ public class WdRpcService {
 		if(result != null){
 			System.out.println(" response =  " + result);
 			AosbResponse reponse = objectMapper.readValue(result.getBytes(), AosbResponse.class);
-			onResponse(reponse);
+			onResponse(reponse, rpcData);
+		}
+	}
+	
+	
+	public  void  sendRpcDataPage() throws Exception{
+		objectMapper.setPropertyNamingStrategy(new CapitalizedPropertyNamingStrategy());
+		String sql = "select  * from SEOutStock_TranRecordView";
+		
+		List<AsbRequestData> rqeustDataPages = this.getAsbPageData(sql);
+		for(AsbRequestData  rpcData :rqeustDataPages){
+			String jsonData = objectMapper.writeValueAsString(rpcData);		
+			System.out.println("data = " + jsonData );		
+			String changeData = asbConfig.getAppSecret() + jsonData + asbConfig.getAppSecret();
+			String md5Data    = AsbEncode.md5(changeData);
+			System.out.println("md5 = "+ md5Data);
+			String base64Data = AsbEncode.base64(md5Data);
+			String sign =   AsbEncode.urlEncode(base64Data);
+			AosbRequest  httpRequest = new AosbRequest();
+			httpRequest.setAppkey(asbConfig.getAppKey());
+			httpRequest.setApptoken(asbConfig.getApptoken());
+			httpRequest.setTimestamp(TimeUtil.getNowDate());
+			httpRequest.setClient_customerid(asbConfig.getClientCustomerId());
+			httpRequest.setData(jsonData);
+			httpRequest.setSign(sign);
+			httpRequest.setMethod("putSOData");
+			httpRequest.setClient_db("FLUXWMS");
+			httpRequest.setFormat("JSON");
+			httpRequest.setMessageid("SO");
+			String result = AresHttpClient.sendHttpPost(asbConfig.getUrl(), httpRequest);
+			if(result != null){
+				System.out.println(" response =  " + result);
+				AosbResponse reponse = objectMapper.readValue(result.getBytes(), AosbResponse.class);
+				onResponse(reponse, rpcData);
+			}
 		}
 	}
 	
@@ -88,9 +123,49 @@ public class WdRpcService {
 		} catch (Exception e) {
 			e.printStackTrace();
 			// TODO: handle exception
-		}
-		
+		}		
 		return requestData;
+	}
+	
+	private List<AsbRequestData> getAsbPageData(String sql){		
+		List<AsbRequestData>  asbRequestDataList = new ArrayList<AsbRequestData>();
+		try{
+			PreparedStatement pstmt = dataSource.getConnection().prepareStatement(sql);
+			ResultSet rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				asbRequestDataList.add(getAsbPageData(rs));
+			}
+			
+		}catch(Exception e){
+			
+		}
+		return asbRequestDataList;
+	}
+	
+	private AsbRequestData getAsbPageData(ResultSet rs) {
+		AsbRequestData requestData = new AsbRequestData();
+		AsbXmlData asbXmlData = new AsbXmlData();
+		List<Header> headList = new ArrayList<Header>();
+
+		requestData.setXmldata(asbXmlData);
+		asbXmlData.setHeader(headList);
+		try {
+			for (int i = 0; i < 100; ++i) {
+				Header header = DBUtils.parseObj(rs, Header.class);
+				String fInterID = rs.getString("FInterID");
+				List<DetailsItem> detailItemList = getDetailbyOrder(fInterID);
+				header.setDetailsItem(detailItemList);
+				headList.add(header);
+				if (!rs.next())
+					return requestData;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		return requestData;
+
 	}
 	
 	private List<DetailsItem> getDetailbyOrder(String fInterID) {
@@ -112,8 +187,8 @@ public class WdRpcService {
 	}
 	
 	
-	private void onResponse(AosbResponse response){
-		System.out.println("response = " + response.getResult().getReturnCode() +" dec = "+ response.getResult().getReturnDesc());
+	private void onResponse(AosbResponse response, AsbRequestData  request){
+		///System.out.println("response = " + response.getResult().getReturnCode() +" dec = "+ response.getResult().getReturnDesc());
 		// do some thing when finish http request 
 	}
 	
