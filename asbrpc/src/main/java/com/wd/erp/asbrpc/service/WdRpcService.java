@@ -2,6 +2,7 @@ package com.wd.erp.asbrpc.service;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,7 @@ import javax.inject.Inject;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wd.erp.asbrpc.bean.AosbRequest;
 import com.wd.erp.asbrpc.bean.AosbResponse;
@@ -18,7 +19,7 @@ import com.wd.erp.asbrpc.bean.AsbRequestData;
 import com.wd.erp.asbrpc.bean.AsbXmlData;
 import com.wd.erp.asbrpc.bean.DetailsItem;
 import com.wd.erp.asbrpc.bean.Header;
-import com.wd.erp.asbrpc.bean.WdRpcData;
+
 import com.wd.erp.asbrpc.config.AsbConfig;
 import com.wd.erp.asbrpc.utils.AresHttpClient;
 import com.wd.erp.asbrpc.utils.AsbEncode;
@@ -28,6 +29,7 @@ import com.wd.erp.asbrpc.utils.TimeUtil;
 
 @Component
 public class WdRpcService {
+	private static int PAGE_COUNT = 10;
 	
 	@Inject
 	private DataSource dataSource;
@@ -127,18 +129,22 @@ public class WdRpcService {
 		return requestData;
 	}
 	
-	private List<AsbRequestData> getAsbPageData(String sql){		
+	private List<AsbRequestData> getAsbPageData(String sql) throws SQLException{		
 		List<AsbRequestData>  asbRequestDataList = new ArrayList<AsbRequestData>();
+		PreparedStatement pstmt = null;
 		try{
-			PreparedStatement pstmt = dataSource.getConnection().prepareStatement(sql);
+			 pstmt = dataSource.getConnection().prepareStatement(sql);
 			ResultSet rs = pstmt.executeQuery();
-
 			while (rs.next()) {
 				asbRequestDataList.add(getAsbPageData(rs));
 			}
 			
 		}catch(Exception e){
 			
+		}
+		finally{
+		  if(pstmt != null)
+			  pstmt.close();
 		}
 		return asbRequestDataList;
 	}
@@ -147,16 +153,17 @@ public class WdRpcService {
 		AsbRequestData requestData = new AsbRequestData();
 		AsbXmlData asbXmlData = new AsbXmlData();
 		List<Header> headList = new ArrayList<Header>();
-
 		requestData.setXmldata(asbXmlData);
 		asbXmlData.setHeader(headList);
 		try {
-			for (int i = 0; i < 100; ++i) {
+			for (int i = 0;  ; ++i) {
 				Header header = DBUtils.parseObj(rs, Header.class);
 				String fInterID = rs.getString("FInterID");
 				List<DetailsItem> detailItemList = getDetailbyOrder(fInterID);
 				header.setDetailsItem(detailItemList);
 				headList.add(header);
+				if(i == PAGE_COUNT - 1)
+					return requestData;
 				if (!rs.next())
 					return requestData;
 			}
@@ -168,20 +175,22 @@ public class WdRpcService {
 
 	}
 	
-	private List<DetailsItem> getDetailbyOrder(String fInterID) {
+	private List<DetailsItem> getDetailbyOrder(String fInterID) throws SQLException {
 		List<DetailsItem> ditailsItemList = new ArrayList<DetailsItem>();
 		String sql = "select * from SEOutStock_TranRecordEntryView where FInterID = '" + fInterID + "'";
+		PreparedStatement pstmt = null;
 		try {
-			PreparedStatement pstmt = dataSource.getConnection()
-					.prepareStatement(sql);
-			ResultSet rs = pstmt.executeQuery();
-	
+		    pstmt = dataSource.getConnection().prepareStatement(sql);
+			ResultSet rs = pstmt.executeQuery();	
 			while (rs.next()) {
 				DetailsItem detailsItem = DBUtils.parseObj(rs, DetailsItem.class);
 				ditailsItemList.add(detailsItem);
 			}
+			pstmt.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally{
+			pstmt.close();
 		}
 		return ditailsItemList;
 	}
