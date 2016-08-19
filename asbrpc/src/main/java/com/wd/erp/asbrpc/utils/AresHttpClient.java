@@ -24,16 +24,16 @@ public class AresHttpClient {
 	public static String  sendHttpPost(String url, AosbRequest request) {
 		
 		RequestConfig defaultRequestConfig = RequestConfig.custom()
-			    .setSocketTimeout(30000)
-			    .setConnectTimeout(20000)
-			    .setConnectionRequestTimeout(30000)
+			    .setSocketTimeout(300000)
+			    .setConnectTimeout(200000)
+			    .setConnectionRequestTimeout(300000)
 			    .setStaleConnectionCheckEnabled(true)
 			    .build();
 		
 		HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().setDefaultRequestConfig(defaultRequestConfig); 
         CloseableHttpClient closeableHttpClient = httpClientBuilder.build(); 
         HttpPost httpPost = new HttpPost(url); 
-        httpPost.setHeader("Content-Type", "application/json");
+        httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
         try{
         	UrlEncodedFormEntity formEntity  = createFormParamsFromObj(request);
         	httpPost.setEntity(formEntity);

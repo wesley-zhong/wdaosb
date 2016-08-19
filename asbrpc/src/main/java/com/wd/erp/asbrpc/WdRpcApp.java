@@ -17,7 +17,7 @@ public class WdRpcApp
     {	
     	ac = new FileSystemXmlApplicationContext(new String[]{"classpath*:applicationContext.xml","classpath*:sqlserver-dal-context.xml"});
     	WdRpcService wdRpcService = (WdRpcService)ac.getBean(WdRpcService.class);
-    	//wdRpcService.sendRpcData();
-    	wdRpcService.sendRpcDataPage();
+    	wdRpcService.sendRpcData();
+    	//wdRpcService.sendRpcDataPage();
     }
 }
