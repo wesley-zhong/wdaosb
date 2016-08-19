@@ -66,7 +66,8 @@ public class WdRpcService {
 		String result = AresHttpClient.sendHttpPost(asbConfig.getUrl(), httpRequest);
 		if(result != null){
 			System.out.println(" response =  " + result);
-			AosbResponse reponse = objectMapper.readValue(result.getBytes(), AosbResponse.class);
+			ObjectMapper robjectMapper  = new ObjectMapper();
+			AosbResponse reponse = robjectMapper.readValue(result.getBytes(), AosbResponse.class);
 			onResponse(reponse, rpcData);
 		}
 	}
@@ -78,11 +79,9 @@ public class WdRpcService {
 		
 		List<AsbRequestData> rqeustDataPages = this.getAsbPageData(sql);
 		for(AsbRequestData  rpcData :rqeustDataPages){
-			String jsonData = objectMapper.writeValueAsString(rpcData);		
-			System.out.println("data = " + jsonData );		
+			String jsonData   = objectMapper.writeValueAsString(rpcData);		
 			String changeData = asbConfig.getAppSecret() + jsonData + asbConfig.getAppSecret();
 			String md5Data    = AsbEncode.md5(changeData);
-			System.out.println("md5 = "+ md5Data);
 			String base64Data = AsbEncode.base64(md5Data);
 			String sign =   AsbEncode.urlEncode(base64Data);
 			AosbRequest  httpRequest = new AosbRequest();
@@ -96,12 +95,20 @@ public class WdRpcService {
 			httpRequest.setClient_db("FLUXWMS");
 			httpRequest.setFormat("JSON");
 			httpRequest.setMessageid("SO");
-			String result = AresHttpClient.sendHttpPost(asbConfig.getUrl(), httpRequest);
-			if(result != null){
-				System.out.println(" response =  " + result);
-				AosbResponse reponse = objectMapper.readValue(result.getBytes(), AosbResponse.class);
-				onResponse(reponse, rpcData);
-			}
+			
+			String result = null;
+			while(result == null){ //for network error
+				result = AresHttpClient.sendHttpPost(asbConfig.getUrl(), httpRequest);
+				if(result != null){
+					System.out.println(" response =  " + result);
+					AosbResponse reponse = objectMapper.readValue(result.getBytes(), AosbResponse.class);
+					onResponse(reponse, rpcData);
+				}
+				else{
+					System.out.println("net work error will reconnected");
+					Thread.sleep(10000);
+				}
+			}	
 		}
 	}
 	
@@ -199,6 +206,13 @@ public class WdRpcService {
 	private void onResponse(AosbResponse response, AsbRequestData  request){
 		///System.out.println("response = " + response.getResult().getReturnCode() +" dec = "+ response.getResult().getReturnDesc());
 		// do some thing when finish http request 
+		StringBuilder sb = new StringBuilder("insert into SEOutStock_TranRecord(FBillNo,FEntryID,FType,FInfo,FDate) values");
+		for(Header header :request.getXmldata().getHeader()){
+			sb.append("(");
+			sb.append("'" + header.getOrderNo() + "'" + ",");
+			sb.append(")
+		}
+		
 	}
 	
 	public void print(){

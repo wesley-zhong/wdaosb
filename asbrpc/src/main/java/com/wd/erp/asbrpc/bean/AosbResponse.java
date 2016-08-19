@@ -1,21 +1,15 @@
 package com.wd.erp.asbrpc.bean;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.Data;
 
 @Data
 public class AosbResponse {
-	
-	@JsonProperty("return")
-	private Result  result;
-	
-	@Data
-	public static class Result{
-      private String  returnCode;
-      private String  returnDesc;
-      private String  returnFlag;
-      private String  resultInfo;
-	}
+	private String returnCode;
+	private String returnDesc;
+	private String returnFlag;
+	private List<String> resultInfo = new ArrayList<String>();
 
 }
