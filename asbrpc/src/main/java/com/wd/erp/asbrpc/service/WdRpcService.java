@@ -210,7 +210,7 @@ public class WdRpcService {
 		for(Header header :request.getXmldata().getHeader()){
 			sb.append("(");
 			sb.append("'" + header.getOrderNo() + "'" + ",");
-			sb.append(")
+		//	sb.append("'" + header.)
 		}
 		
 	}
