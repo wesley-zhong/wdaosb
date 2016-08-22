@@ -2,6 +2,8 @@ package com.wd.erp.asbrpc;
 
 
 import org.apache.xbean.spring.context.FileSystemXmlApplicationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import com.wd.erp.asbrpc.service.WdRpcService;
@@ -17,7 +19,7 @@ public class WdRpcApp
     {	
     	ac = new FileSystemXmlApplicationContext(new String[]{"classpath*:applicationContext.xml","classpath*:sqlserver-dal-context.xml"});
     	WdRpcService wdRpcService = (WdRpcService)ac.getBean(WdRpcService.class);
-    	wdRpcService.sendRpcData();
-    	//wdRpcService.sendRpcDataPage();
+    	//wdRpcService.sendRpcData();
+    	wdRpcService.sendRpcDataPage();
     }
 }

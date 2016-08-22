@@ -8,9 +8,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.apache.activemq.util.TimeUtils;
 import org.apache.tomcat.jdbc.pool.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wd.erp.asbrpc.bean.AosbRequest;
@@ -29,7 +32,7 @@ import com.wd.erp.asbrpc.utils.TimeUtil;
 
 @Component
 public class WdRpcService {
-	private static int PAGE_COUNT = 10;
+	private static int PAGE_COUNT = 100;
 	
 	@Inject
 	private DataSource dataSource;
@@ -37,6 +40,7 @@ public class WdRpcService {
 	@Inject
 	private AsbConfig asbConfig;
 	
+	private Logger logger = LoggerFactory.getLogger(WdRpcService.class);
 	
 	private ObjectMapper objectMapper  = new ObjectMapper();
 	
@@ -46,11 +50,11 @@ public class WdRpcService {
 		String sql = "select * from SEOutStock_TranRecordView ";
 		AsbRequestData rpcData = this.getAsbData(sql);
 		String jsonData = objectMapper.writeValueAsString(rpcData);		
-		System.out.println("data = " + jsonData );
+		logger.info("data ={} " , jsonData );
 		
 		String changeData = asbConfig.getAppSecret() + jsonData + asbConfig.getAppSecret();
 		String md5Data    = AsbEncode.md5(changeData);
-		System.out.println("md5 = "+ md5Data);
+
 		String base64Data = AsbEncode.base64(md5Data);
 		String sign =   AsbEncode.urlEncode(base64Data);
 		AosbRequest  httpRequest = new AosbRequest();
@@ -66,7 +70,7 @@ public class WdRpcService {
 		httpRequest.setMessageid("SO");
 		String result = AresHttpClient.sendHttpPost(asbConfig.getUrl(), httpRequest);
 		if(result != null){
-			System.out.println(" response =  " + result);
+			logger.info(" response = {} ", result);
 			ObjectMapper robjectMapper  = new ObjectMapper();
 			AosbResponse reponse = robjectMapper.readValue(result.getBytes(), AosbResponse.class);
 			onResponse(reponse, rpcData);
@@ -74,43 +78,54 @@ public class WdRpcService {
 	}
 	
 	
-	public  void  sendRpcDataPage() throws Exception{
-		objectMapper.setPropertyNamingStrategy(new CapitalizedPropertyNamingStrategy());
-		String sql = "select  * from SEOutStock_TranRecordView";
-		
-		List<AsbRequestData> rqeustDataPages = this.getAsbPageData(sql);
-		for(AsbRequestData  rpcData :rqeustDataPages){
-			String jsonData   = objectMapper.writeValueAsString(rpcData);		
-			String changeData = asbConfig.getAppSecret() + jsonData + asbConfig.getAppSecret();
-			String md5Data    = AsbEncode.md5(changeData);
-			String base64Data = AsbEncode.base64(md5Data);
-			String sign =   AsbEncode.urlEncode(base64Data);
-			AosbRequest  httpRequest = new AosbRequest();
-			httpRequest.setAppkey(asbConfig.getAppKey());
-			httpRequest.setApptoken(asbConfig.getApptoken());
-			httpRequest.setTimestamp(TimeUtil.getNowDate());
-			httpRequest.setClient_customerid(asbConfig.getClientCustomerId());
-			httpRequest.setData(jsonData);
-			httpRequest.setSign(sign);
-			httpRequest.setMethod("putSOData");
-			httpRequest.setClient_db("FLUXWMS");
-			httpRequest.setFormat("JSON");
-			httpRequest.setMessageid("SO");
-			
-			String result = null;
-			while(result == null){ //for network error
-				result = AresHttpClient.sendHttpPost(asbConfig.getUrl(), httpRequest);
-				if(result != null){
-					System.out.println(" response =  " + result);
-					AosbResponse reponse = objectMapper.readValue(result.getBytes(), AosbResponse.class);
-					onResponse(reponse, rpcData);
+	public void sendRpcDataPage() {
+		try {
+			objectMapper
+					.setPropertyNamingStrategy(new CapitalizedPropertyNamingStrategy());
+			String sql = "select  * from SEOutStock_TranRecordView";
+
+			List<AsbRequestData> rqeustDataPages = this.getAsbPageData(sql);
+			for (AsbRequestData rpcData : rqeustDataPages) {
+				String jsonData = objectMapper.writeValueAsString(rpcData);
+				String changeData = asbConfig.getAppSecret() + jsonData
+						+ asbConfig.getAppSecret();
+				String md5Data = AsbEncode.md5(changeData);
+				String base64Data = AsbEncode.base64(md5Data);
+				String sign = AsbEncode.urlEncode(base64Data);
+				AosbRequest httpRequest = new AosbRequest();
+				httpRequest.setAppkey(asbConfig.getAppKey());
+				httpRequest.setApptoken(asbConfig.getApptoken());
+				httpRequest.setTimestamp(TimeUtil.getNowDate());
+				httpRequest.setClient_customerid(asbConfig
+						.getClientCustomerId());
+				httpRequest.setData(jsonData);
+				httpRequest.setSign(sign);
+				httpRequest.setMethod("putSOData");
+				httpRequest.setClient_db("FLUXWMS");
+				httpRequest.setFormat("JSON");
+				httpRequest.setMessageid("SO");
+
+				String result = null;
+				while (result == null) { // for network error
+					result = AresHttpClient.sendHttpPost(asbConfig.getUrl(),
+							httpRequest);
+					if (result != null) {
+						logger.info(" response = {} ", result);
+						ObjectMapper robjectMapper = new ObjectMapper();
+						AosbResponse reponse = robjectMapper.readValue(
+								result.getBytes(), AosbResponse.class);
+						onResponse(reponse, rpcData);
+					} else {
+						logger.info("net work error will reconnected");
+						Thread.sleep(10000);
+					}
 				}
-				else{
-					System.out.println("net work error will reconnected");
-					Thread.sleep(10000);
-				}
-			}	
+			}
+
+		} catch (Exception e) {
+			logger.error(e.getMessage());
 		}
+		logger.info("sucess!");
 	}
 	
 	private AsbRequestData getAsbData(String sql) {
@@ -131,7 +146,7 @@ public class WdRpcService {
 				headList.add(header);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.toString());		
 			// TODO: handle exception
 		}		
 		return requestData;
@@ -176,7 +191,7 @@ public class WdRpcService {
 					return requestData;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			// TODO: handle exception
 		}
 		return requestData;
@@ -196,6 +211,7 @@ public class WdRpcService {
 			}
 			pstmt.close();
 		} catch (Exception e) {
+			logger.error(e.getMessage());
 			e.printStackTrace();
 		}finally{
 			pstmt.close();
@@ -219,13 +235,12 @@ public class WdRpcService {
 			sb.append("'" + responseBean.getErrorcode() +" " + responseBean.getErrordescr() +"'," + "'" +  TimeUtil.getNowDate() +"'),");
 		}
 		
-		System.out.println("sql = "+ sb.toString());
+	//	System.out.println("sql = "+ sb.toString());
 		
 		PreparedStatement pstmt = dataSource.getConnection().prepareStatement(sb.substring(0, sb.length() - 1));
 		boolean  rs = pstmt.execute();
 		
-		System.out.println(" rtt = " + rs +"sql = " + sb.toString()  + " update count " + pstmt.getUpdateCount());
-		
+		logger.info(" rtt ={} sql = {} update count ={}", rs, sb.toString() ,pstmt.getUpdateCount());	
 	}
 	
 	public void print(){

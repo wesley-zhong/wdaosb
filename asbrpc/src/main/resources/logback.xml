@@ -8,24 +8,6 @@
         </layout>
     </appender>
     
-    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-
-        <file>logs/aosb.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- daily rollover -->
-            <fileNamePattern>logs/vanguard.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%-4relative [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>%date [%thread] %-5level %logger{36} - %msg%n</Pattern>
-        </layout>
-    </appender>
-    
-
-
-
     <root level="${root.log.level:-INFO}">
         <appender-ref ref="FILE"/>
     </root>
@@ -43,6 +25,22 @@
         <appender-ref ref="CoalescingStatistics"/>
         <appender-ref ref="perf4jFileAppender"/>
     </logger>
+    
+        <appender name="asbErrorAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${CATALINA_BASE}/logs/asbrpc.log</File>
+        <encoder>
+            <Pattern>%date %-5level [%file:%line] %msg%n</Pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${CATALINA_BASE}/logs/dao_error.%d{yyyy-MM-dd}.log.gz</FileNamePattern>
+        </rollingPolicy>
+    </appender>
+    
+    <logger name ="com.wd.erp.asbrpc.service.WdRpcService" level="DEBUG" additivity="false" >
+	      <appender-ref ref ="asbErrorAppender"/>
+	      <appender-ref ref ="STDOUT"/>
+	      
+	</logger>
     
 
 </configuration>
