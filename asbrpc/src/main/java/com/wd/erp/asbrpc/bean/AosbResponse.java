@@ -10,6 +10,5 @@ public class AosbResponse {
 	private String returnCode;
 	private String returnDesc;
 	private String returnFlag;
-	private List<String> resultInfo = new ArrayList<String>();
-
+	private List<ResponseOrderBean> resultInfo = new ArrayList<ResponseOrderBean>();
 }

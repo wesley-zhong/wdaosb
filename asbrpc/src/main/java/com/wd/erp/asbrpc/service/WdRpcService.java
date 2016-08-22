@@ -8,9 +8,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.apache.activemq.util.TimeUtils;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.stereotype.Component;
-
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wd.erp.asbrpc.bean.AosbRequest;
@@ -19,7 +19,7 @@ import com.wd.erp.asbrpc.bean.AsbRequestData;
 import com.wd.erp.asbrpc.bean.AsbXmlData;
 import com.wd.erp.asbrpc.bean.DetailsItem;
 import com.wd.erp.asbrpc.bean.Header;
-
+import com.wd.erp.asbrpc.bean.ResponseOrderBean;
 import com.wd.erp.asbrpc.config.AsbConfig;
 import com.wd.erp.asbrpc.utils.AresHttpClient;
 import com.wd.erp.asbrpc.utils.AsbEncode;
@@ -42,7 +42,8 @@ public class WdRpcService {
 	
 	public void  sendRpcData() throws Exception{
 		objectMapper.setPropertyNamingStrategy(new CapitalizedPropertyNamingStrategy());
-		String sql = "select top 6 * from SEOutStock_TranRecordView";
+
+		String sql = "select * from SEOutStock_TranRecordView ";
 		AsbRequestData rpcData = this.getAsbData(sql);
 		String jsonData = objectMapper.writeValueAsString(rpcData);		
 		System.out.println("data = " + jsonData );
@@ -203,15 +204,27 @@ public class WdRpcService {
 	}
 	
 	
-	private void onResponse(AosbResponse response, AsbRequestData  request){
+	private void onResponse(AosbResponse response, AsbRequestData  request) throws SQLException{
 		///System.out.println("response = " + response.getResult().getReturnCode() +" dec = "+ response.getResult().getReturnDesc());
 		// do some thing when finish http request 
 		StringBuilder sb = new StringBuilder("insert into SEOutStock_TranRecord(FBillNo,FEntryID,FType,FInfo,FDate) values");
-		for(Header header :request.getXmldata().getHeader()){
+		for(ResponseOrderBean  responseBean : response.getResultInfo()){
 			sb.append("(");
-			sb.append("'" + header.getOrderNo() + "'" + ",");
-		//	sb.append("'" + header.)
+			sb.append("'" + responseBean.getOrderNo() + "',");
+			sb.append("'0',");
+			if(responseBean.getErrorcode().equals("0"))
+			  sb.append(0 +",");
+			else
+				sb.append(1 +",");
+			sb.append("'" + responseBean.getErrorcode() +" " + responseBean.getErrordescr() +"'," + "'" +  TimeUtil.getNowDate() +"'),");
 		}
+		
+		System.out.println("sql = "+ sb.toString());
+		
+		PreparedStatement pstmt = dataSource.getConnection().prepareStatement(sb.substring(0, sb.length() - 1));
+		boolean  rs = pstmt.execute();
+		
+		System.out.println(" rtt = " + rs +"sql = " + sb.toString()  + " update count " + pstmt.getUpdateCount());
 		
 	}
 	
