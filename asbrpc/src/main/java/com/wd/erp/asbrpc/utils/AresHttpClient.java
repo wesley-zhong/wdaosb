@@ -22,7 +22,7 @@ public class AresHttpClient {
 
 	
 	public static String  sendHttpPost(String url, AosbRequest request) {
-		
+		System.out.println("url =  " + url);
 		RequestConfig defaultRequestConfig = RequestConfig.custom()
 			    .setSocketTimeout(300000)
 			    .setConnectTimeout(200000)

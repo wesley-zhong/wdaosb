@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wd.erp.asbrpc.bean.AosbRequest;
 import com.wd.erp.asbrpc.bean.AosbResponse;
@@ -24,6 +25,7 @@ import com.wd.erp.asbrpc.bean.DetailsItem;
 import com.wd.erp.asbrpc.bean.Header;
 import com.wd.erp.asbrpc.bean.ResponseOrderBean;
 import com.wd.erp.asbrpc.config.AsbConfig;
+import com.wd.erp.asbrpc.utils.AresFileReader;
 import com.wd.erp.asbrpc.utils.AresHttpClient;
 import com.wd.erp.asbrpc.utils.AsbEncode;
 import com.wd.erp.asbrpc.utils.CapitalizedPropertyNamingStrategy;
@@ -87,11 +89,18 @@ public class WdRpcService {
 			List<AsbRequestData> rqeustDataPages = this.getAsbPageData(sql);
 			for (AsbRequestData rpcData : rqeustDataPages) {
 				String jsonData = objectMapper.writeValueAsString(rpcData);
-				String changeData = asbConfig.getAppSecret() + jsonData
+				String changeData = asbConfig.getAppSecret() + new String(jsonData.getBytes("utf-8"))
 						+ asbConfig.getAppSecret();
-				String md5Data = AsbEncode.md5(changeData);
+				logger.info("wd data={}",changeData);
+		
+				String utf8ChangeData = new String(changeData.getBytes("UTF-8"));
+				System.out.println("data = " + changeData);
+				String md5Data = AsbEncode.md5(utf8ChangeData);
+				System.out.println("md5 = " + md5Data + "len = "+ utf8ChangeData.length());
 				String base64Data = AsbEncode.base64(md5Data);
+				System.out.println("base64 = " + base64Data);
 				String sign = AsbEncode.urlEncode(base64Data);
+				System.out.println("sign == " + sign);
 				AosbRequest httpRequest = new AosbRequest();
 				httpRequest.setAppkey(asbConfig.getAppKey());
 				httpRequest.setApptoken(asbConfig.getApptoken());
