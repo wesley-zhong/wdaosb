@@ -89,14 +89,13 @@ public class WdRpcService {
 			List<AsbRequestData> rqeustDataPages = this.getAsbPageData(sql);
 			for (AsbRequestData rpcData : rqeustDataPages) {
 				String jsonData = objectMapper.writeValueAsString(rpcData);
-				String changeData = asbConfig.getAppSecret() + new String(jsonData.getBytes("utf-8"))
+				String changeData = asbConfig.getAppSecret() + jsonData
 						+ asbConfig.getAppSecret();
 				logger.info("wd data={}",changeData);
 		
-				String utf8ChangeData = new String(changeData.getBytes("UTF-8"));
-				System.out.println("data = " + changeData);
-				String md5Data = AsbEncode.md5(utf8ChangeData);
-				System.out.println("md5 = " + md5Data + "len = "+ utf8ChangeData.length());
+				//String utf8ChangeData = new String(changeData.getBytes("UTF-8"));
+				String md5Data = AsbEncode.md5(changeData);
+				System.out.println("md5 = " + md5Data + "len = "+ changeData.length());
 				String base64Data = AsbEncode.base64(md5Data);
 				System.out.println("base64 = " + base64Data);
 				String sign = AsbEncode.urlEncode(base64Data);
@@ -122,7 +121,7 @@ public class WdRpcService {
 						logger.info(" response = {} ", result);
 						ObjectMapper robjectMapper = new ObjectMapper();
 						AosbResponse reponse = robjectMapper.readValue(
-								result.getBytes(), AosbResponse.class);
+								result.getBytes("utf-8"), AosbResponse.class);
 						onResponse(reponse, rpcData);
 					} else {
 						logger.info("net work error will reconnected");
@@ -201,6 +200,7 @@ public class WdRpcService {
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage());
+			e.printStackTrace();
 			// TODO: handle exception
 		}
 		return requestData;

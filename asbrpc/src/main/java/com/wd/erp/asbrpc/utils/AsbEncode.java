@@ -10,7 +10,7 @@ public class AsbEncode {
 
 	public static String md5(String msg) throws Exception {
 	    MessageDigest md = MessageDigest.getInstance("MD5"); 
-	    md.update(msg.getBytes());    
+	    md.update(msg.getBytes("UTF-8"));    
 	    byte[] mdbytes = md.digest();
 	    StringBuffer sb = new StringBuffer();
 	    for (int i = 0; i < mdbytes.length; i++) {
