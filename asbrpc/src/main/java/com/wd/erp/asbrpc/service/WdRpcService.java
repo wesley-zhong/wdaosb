@@ -82,8 +82,7 @@ public class WdRpcService {
 	
 	public void sendRpcDataPage() {
 		try {
-			objectMapper
-					.setPropertyNamingStrategy(new CapitalizedPropertyNamingStrategy());
+			objectMapper.setPropertyNamingStrategy(new CapitalizedPropertyNamingStrategy());
 			String sql = "select  * from SEOutStock_TranRecordView";
 
 			List<AsbRequestData> rqeustDataPages = this.getAsbPageData(sql);
