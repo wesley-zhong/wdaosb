@@ -25,8 +25,8 @@ public class AresHttpClient {
 		System.out.println("url =  " + url);
 		RequestConfig defaultRequestConfig = RequestConfig.custom()
 			    .setSocketTimeout(600000)
-			    .setConnectTimeout(6000000)
-			    .setConnectionRequestTimeout(600000)
+			    .setConnectTimeout(600000)
+			    .setConnectionRequestTimeout(1200000)
 			    .setStaleConnectionCheckEnabled(true)
 			    .build();
 		

@@ -133,7 +133,7 @@ public class WdRpcService {
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
-		logger.info("sucess!");
+		logger.info("success!");
 	}
 	
 	private AsbRequestData getAsbData(String sql) {
@@ -230,26 +230,39 @@ public class WdRpcService {
 	
 	
 	private void onResponse(AosbResponse response, AsbRequestData  request) throws SQLException{
-		///System.out.println("response = " + response.getResult().getReturnCode() +" dec = "+ response.getResult().getReturnDesc());
-		// do some thing when finish http request 
 		StringBuilder sb = new StringBuilder("insert into SEOutStock_TranRecord(FBillNo,FEntryID,FType,FInfo,FDate) values");
 		for(ResponseOrderBean  responseBean : response.getResultInfo()){
+			removeFaildeOrder(request, responseBean.getOrderNo());
 			sb.append("(");
 			sb.append("'" + responseBean.getOrderNo() + "',");
 			sb.append("'0',");
-			if(responseBean.getErrorcode().equals("0"))
-			  sb.append(0 +",");
-			else
-				sb.append(1 +",");
+			sb.append(1 +",");
 			sb.append("'" + responseBean.getErrorcode() +" " + responseBean.getErrordescr() +"'," + "'" +  TimeUtil.getNowDate() +"'),");
 		}
 		
-	//	System.out.println("sql = "+ sb.toString());
-		
+		List<Header> successHeaderList = request.getXmldata().getHeader();
+		for(Header header : successHeaderList){
+			sb.append("(");
+			sb.append("'" + header.getOrderNo() + "',");
+			sb.append("'0',");
+			sb.append(0 +",");
+			sb.append("'0'," + "'" +  TimeUtil.getNowDate() +"'),");
+		}
 		PreparedStatement pstmt = dataSource.getConnection().prepareStatement(sb.substring(0, sb.length() - 1));
 		boolean  rs = pstmt.execute();
 		
 		logger.info(" rtt ={} sql = {} update count ={}", rs, sb.toString() ,pstmt.getUpdateCount());	
+	}
+	
+	private void  removeFaildeOrder( AsbRequestData  request, String orderId){
+		List<Header> headerList = request.getXmldata().getHeader();
+		for(int index = 0 ; index < headerList.size(); ++index){
+			Header header = headerList.get(index);
+			if(header.getOrderNo().equals(orderId)){
+				request.getXmldata().getHeader().remove(index);
+				return;
+			}
+		}
 	}
 	
 	public void print(){
