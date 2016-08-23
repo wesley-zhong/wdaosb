@@ -95,11 +95,11 @@ public class WdRpcService {
 		
 				//String utf8ChangeData = new String(changeData.getBytes("UTF-8"));
 				String md5Data = AsbEncode.md5(changeData);
-				System.out.println("md5 = " + md5Data + "len = "+ changeData.length());
+				logger.info("md5 ={} " + md5Data);
 				String base64Data = AsbEncode.base64(md5Data);
-				System.out.println("base64 = " + base64Data);
+				logger.info("base64 = {}" , base64Data);
 				String sign = AsbEncode.urlEncode(base64Data);
-				System.out.println("sign == " + sign);
+				logger.info("sign == {}",sign);
 				AosbRequest httpRequest = new AosbRequest();
 				httpRequest.setAppkey(asbConfig.getAppKey());
 				httpRequest.setApptoken(asbConfig.getApptoken());

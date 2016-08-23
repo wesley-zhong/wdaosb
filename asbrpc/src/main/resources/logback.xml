@@ -32,13 +32,13 @@
             <Pattern>%date %-5level [%file:%line] %msg%n</Pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${CATALINA_BASE}/logs/dao_error.%d{yyyy-MM-dd}.log.gz</FileNamePattern>
+            <FileNamePattern>${CATALINA_BASE}/logs/asbrpc.%d{yyyy-MM-dd}.log.gz</FileNamePattern>
         </rollingPolicy>
     </appender>
     
     <logger name ="com.wd.erp.asbrpc.service.WdRpcService" level="DEBUG" additivity="false" >
 	      <appender-ref ref ="asbErrorAppender"/>
-	      <appender-ref ref ="STDOUT"/>
+	      <!--  <appender-ref ref ="STDOUT"/> -->
 	      
 	</logger>
     

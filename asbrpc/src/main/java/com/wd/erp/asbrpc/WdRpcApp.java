@@ -2,8 +2,6 @@ package com.wd.erp.asbrpc;
 
 
 import org.apache.xbean.spring.context.FileSystemXmlApplicationContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import com.wd.erp.asbrpc.service.WdRpcService;
